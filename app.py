@@ -6,29 +6,157 @@ from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import CarouselColumn, URITemplateAction, MessageTemplateAction
 
 from fsm import TocMachine
-from utils import send_text_message
+from utils import send_text_message, send_button_message, send_carousel_message
 
 load_dotenv()
 
 
+
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=[
+        "user", 
+        "else", 
+        "relation",
+        "health",
+        "seven_days",
+        "lecture",
+        "one_1",
+        "three_1",
+        "three_2",
+        "three_3",
+        "seven_1",
+        "seven_2",
+        "seven_3",
+        "seven_4",
+        "seven_5",
+        "seven_6",
+        "seven_7",
+        "notice"
+        ],
     transitions=[
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "dest": "else",
+            "conditions": "is_going_to_else",
         },
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "dest": "relation",
+            "conditions": "is_going_to_relation",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "health",
+            "conditions": "is_going_to_health",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "seven_days",
+            "conditions": "is_going_to_seven_days",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "lecture",
+            "conditions": "is_going_to_lecture",
+        },
+        #1day
+        {
+            "trigger": "advance",
+            "source": 
+            [ "else", "lecture", "relation", "health"],
+            "dest": "one_1",
+            "conditions": "is_going_to_one_1",
+        },
+        #3days
+        {
+            "trigger": "advance",
+            "source": 
+            [ "else", "lecture", "relation", "health"],
+            "dest": "three_1",
+            "conditions": "is_going_to_three_1",
+        },
+        {
+            "trigger": "advance",
+            "source": "three_1",
+            "dest": "three_2",
+            "conditions": "is_going_to_three_2",
+        },
+        {
+            "trigger": "advance",
+            "source": "three_2",
+            "dest": "three_3",
+            "conditions": "is_going_to_three_3",
+        },
+        #7days
+        {
+            "trigger": "advance",
+            "source": "seven_days",
+            "dest": "seven_1",
+            "conditions": "is_going_to_seven_1",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_1",
+            "dest": "seven_2",
+            "conditions": "is_going_to_seven_2",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_2",
+            "dest": "seven_3",
+            "conditions": "is_going_to_seven_3",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_3",
+            "dest": "seven_4",
+            "conditions": "is_going_to_seven_4",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_4",
+            "dest": "seven_5",
+            "conditions": "is_going_to_seven_5",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_5",
+            "dest": "seven_6",
+            "conditions": "is_going_to_seven_6",
+        },
+        {
+            "trigger": "advance",
+            "source": "seven_6",
+            "dest": "seven_7",
+            "conditions": "is_going_to_seven_7",
+        },
+        #notice
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "notice",
+            "conditions": "is_going_to_notice",
+        },
+        #go to home page
+        {
+            "trigger": "advance", 
+            "source": [
+                "seven_7",
+                "one_1",
+                "three_3",
+                "notice",
+            ], 
+            "dest": "user",
+            "conditions": "is_going_to_user",
+        },
     ],
     initial="user",
     auto_transitions=False,
@@ -51,32 +179,6 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
-
-@app.route("/callback", methods=["POST"])
-def callback():
-    signature = request.headers["X-Line-Signature"]
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # parse webhook body
-    try:
-        events = parser.parse(body, signature)
-    except InvalidSignatureError:
-        abort(400)
-
-    # if event is MessageEvent and message is TextMessage, then echo text
-    for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
-
-    return "OK"
 
 
 @app.route("/webhook", methods=["POST"])
@@ -103,8 +205,48 @@ def webhook_handler():
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
+        
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+            print("reach here\n")
+            if machine.state == 'user':
+                url = ['https://i.imgur.com/xAn4QKL.jpg', 
+                    'https://i.imgur.com/2rCbqFV.jpg', 
+                    'https://i.imgur.com/25sqgme.jpg', 
+                    'https://i.imgur.com/UfvvrcQ.jpg', 
+                    'https://i.imgur.com/RWZhynA.jpg']
+                choice = ['課業','人際關係','健康','七天運勢', '其他']
+                col = []
+                c = CarouselColumn(
+                    thumbnail_image_url = "https://i.imgur.com/s2EDHNX.jpg",
+                    title =  '歡迎來到班傑明的塔羅占卜',
+                    text =  '可從此處閱讀占卜的注意事項',
+                    actions = [
+                        MessageTemplateAction(
+                            label = '閱讀占卜的注意事項',
+                            text = '閱讀占卜的注意事項',
+                        ),
+                    ]
+                )
+                col.append(c)
+
+                for i in range(5):
+                    c = CarouselColumn(
+                        thumbnail_image_url = url[i],
+                        title =  '歡迎來到班傑明的塔羅占卜',
+                        text =  '請選擇您要占卜的項目',
+                        actions = [
+                            MessageTemplateAction(
+                                label = choice[i],
+                                text = choice[i],
+                            ),
+                        ]
+                    )
+                    col.append(c)
+
+                send_carousel_message(event.reply_token, col)
+            elif machine.state == "one_1" or machine.state == "three_1" or machine.state == "three_2" or machine.state == "three_3" or machine.state == "seven_1" or machine.state == "seven_2" or machine.state == "seven_3" or machine.state == "seven_4" or machine.state == "seven_5" or machine.state == "seven_6" or machine.state == "seven_7":
+                if event.message.text == "觀看更多牌義":
+                    machine.definition(event)
 
     return "OK"
 
