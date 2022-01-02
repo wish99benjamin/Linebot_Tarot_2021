@@ -37,14 +37,14 @@
 5. run git &rarr; add &rarr; commit &rarr; push again and verify your url on line developer
 
 ### Reference
-TOC slides 2021(https://docs.google.com/presentation/d/1HSf3-m6_h9Uv2N_y9mgOG6fOho-bRhl0oInhHdC45ZU/edit#slide=id.g25a54d5e5a4faf37_26)
-Install pandas on HEROKU(https://www.codenong.com/94e124b895399dea9c7d/)
-Flex Message Tutorial(https://ithelp.ithome.com.tw/articles/10243334)
-Flex Message Simulator(https://developers.line.biz/flex-simulator/?fbclid=IwAR3pc2iSGY3GLSZwBU55ooY3v-xSZQ8J3Wih8Z4K9Gux9LXfjxqsYJUzdMY)
-Other notes(https://cloud-stone-4a6.notion.site/FINAL-PROJECT-daabd7ad551543d585a8dfaddef0885c)
+TOC slides 2021(https://docs.google.com/presentation/d/1HSf3-m6_h9Uv2N_y9mgOG6fOho-bRhl0oInhHdC45ZU/edit#slide=id.g25a54d5e5a4faf37_26)  
+Install pandas on HEROKU(https://www.codenong.com/94e124b895399dea9c7d/)  
+Flex Message Tutorial(https://ithelp.ithome.com.tw/articles/10243334)  
+Flex Message Simulator(https://developers.line.biz/flex-simulator/?  fbclid=IwAR3pc2iSGY3GLSZwBU55ooY3v-xSZQ8J3Wih8Z4K9Gux9LXfjxqsYJUzdMY)  
+Other notes(https://cloud-stone-4a6.notion.site/FINAL-PROJECT-daabd7ad551543d585a8dfaddef0885c)  
 
 ### Repos for Chatbot
-Line Fitness (https://github.com/aqwefghnm/LineChatBot)
-Line Movie (https://github.com/lofoz/LineBot?fbclid=IwAR1rGyFue0UGdl4FA-gYUgFM0tKJrEAnq6-wgghuS5PTx6uaa6pMGvLAZa4)
+Line Fitness (https://github.com/aqwefghnm/LineChatBot)  
+Line Movie (https://github.com/lofoz/LineBot?  fbclid=IwAR1rGyFue0UGdl4FA-gYUgFM0tKJrEAnq6-wgghuS5PTx6uaa6pMGvLAZa4)  
 
 
