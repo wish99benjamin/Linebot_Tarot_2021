@@ -14,8 +14,8 @@ from utils import send_text_message, send_button_message, send_carousel_message
 load_dotenv()
 
 
-
-machine = TocMachine(
+def create_new_machine():
+    return TocMachine(
     states=[
         "user", 
         "else", 
@@ -164,7 +164,7 @@ machine = TocMachine(
 )
 
 app = Flask(__name__, static_url_path="")
-
+machines = {}
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
@@ -202,13 +202,17 @@ def webhook_handler():
             continue
         if not isinstance(event.message.text, str):
             continue
-        print(f"\nFSM STATE: {machine.state}")
+        print(f"\nFSM STATE: {machines[event.source.user_id].state}")
         print(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
+
+        if event.source.user_id not in machines:
+            machines[event.source.user_id] = create_new_machine()
+
+        response = machines[event.source.user_id].advance(event)
         
         if response == False:
             print("reach here\n")
-            if machine.state == 'user':
+            if machines[event.source.user_id].state == 'user':
                 url = ['https://i.imgur.com/xAn4QKL.jpg', 
                     'https://i.imgur.com/2rCbqFV.jpg', 
                     'https://i.imgur.com/25sqgme.jpg', 
@@ -244,15 +248,16 @@ def webhook_handler():
                     col.append(c)
 
                 send_carousel_message(event.reply_token, col)
-            elif machine.state == "one_1" or machine.state == "three_1" or machine.state == "three_2" or machine.state == "three_3" or machine.state == "seven_1" or machine.state == "seven_2" or machine.state == "seven_3" or machine.state == "seven_4" or machine.state == "seven_5" or machine.state == "seven_6" or machine.state == "seven_7":
+            elif machines[event.source.user_id].state == "one_1" or machines[event.source.user_id].state == "three_1" or machines[event.source.user_id].state == "three_2" or machines[event.source.user_id].state == "three_3" or machines[event.source.user_id].state == "seven_1" or machines[event.source.user_id].state == "seven_2" or machines[event.source.user_id].state == "seven_3" or machines[event.source.user_id].state == "seven_4" or machines[event.source.user_id].state == "seven_5" or machines[event.source.user_id].state == "seven_6" or machines[event.source.user_id].state == "seven_7":
                 if event.message.text == "觀看更多牌義":
-                    machine.definition(event)
+                    machines[event.source.user_id].definition(event)
 
     return "OK"
 
 
 @app.route("/show-fsm", methods=["GET"])
 def show_fsm():
+    machine = create_new_machine()
     machine.get_graph().draw("fsm.png", prog="dot", format="png")
     return send_file("fsm.png", mimetype="image/png")
 
