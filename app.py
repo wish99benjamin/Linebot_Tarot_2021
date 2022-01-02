@@ -160,6 +160,7 @@ def create_new_machine():
     ],
     initial="user",
     auto_transitions=False,
+    #delete the following line for python 3.7 or above 
     show_conditions=True,
 )
 

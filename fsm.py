@@ -1,6 +1,8 @@
 from transitions.extensions import GraphMachine
+#for those using python3.7 or above who want to push to HEROKU
+#from transitions import Machine
+#change all GraphMachine into Machine
 from utils import send_text_message, send_notice_message, send_button_message, send_carousel_message, send_definition_message
-#from bs4 import BeautifulSoup
 import requests
 from linebot.models import CarouselColumn, URITemplateAction, MessageTemplateAction
 import pandas as pd
